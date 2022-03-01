@@ -16,10 +16,10 @@ async function onCreateStudent(event) {
     const form = event.target;
     const formData = new FormData(form);
 
-    const firstName = formData.get('firstName');
-    const lastName = formData.get('lastName');
-    const facultyNumber = formData.get('facultyNumber');
-    const grade = formData.get('grade');
+    const firstName = formData.get('firstName').trim();
+    const lastName = formData.get('lastName').trim();
+    const facultyNumber = formData.get('facultyNumber').trim();
+    const grade = formData.get('grade').trim();
 
     if (
         firstName == '' ||
