@@ -36,7 +36,6 @@ function attachEvents() {
                 forecastElement.style.display = 'block';
                 console.log(currentWeather);
                 console.log(upcommingWeather);
-
                 currentWeatherElement.appendChild(
                     createCurrentWeatherElement(currentWeather, weatherSymbols)
                 );
