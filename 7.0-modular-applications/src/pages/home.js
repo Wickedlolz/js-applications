@@ -2,7 +2,7 @@ import { html } from '../lib.js';
 
 const homeTemplate = () => html`
     <article class="hero layout">
-        <img src="./assets/team.png" class="left-col pad-med" />
+        <img src="/assets/team.png" class="left-col pad-med" />
         <div class="pad-med tm-hero-col">
             <h2>Welcome to Team Manager!</h2>
             <p>
@@ -12,8 +12,8 @@ const homeTemplate = () => html`
                 Looking for a team to join? Browse our communities and find
                 like-minded people!
             </p>
-            <a href="#" class="action cta">Sign Up Now</a>
-            <a href="#" class="action cta">Browse Teams</a>
+            <a href="/register" class="action cta">Sign Up Now</a>
+            <a href="/teams" class="action cta">Browse Teams</a>
         </div>
     </article>
 `;

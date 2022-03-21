@@ -12,7 +12,10 @@ page.start();
 
 function decorateContext(ctx, next) {
     ctx.render = (content) =>
-        render([navigation(), content], document.querySelector('#content'));
+        render(
+            [navigation(), content],
+            document.querySelector('#content main')
+        );
 
     next();
 }
