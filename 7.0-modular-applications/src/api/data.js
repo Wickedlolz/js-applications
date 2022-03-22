@@ -1,51 +1,78 @@
-import { get, post, put, del } from './request.js';
+import * as api from './api.js';
 
-const endpoints = {
-    ALL_BOOKS: '/data/books?sortBy=_createdOn%20desc',
-    CREATE_BOOK: '/data/books',
-    DETAILS_BOOK: '/data/books/',
-    EDIT_BOOK: '/data/books/',
-    DELETE_BOOK: '/data/books/',
-    MY_BOOKS: (userId) =>
-        `/data/books?where=_ownerId%3D%22${userId}%22&sortBy=_createdOn%20desc`,
-    SEARCH: (querystring) => `/data/cars?where=year%3D${querystring}`,
-    LIKE: '/data/likes',
-    ALL_LIKES: (bookId) =>
-        `/data/likes?where=bookId%3D%22${bookId}%22&distinct=_ownerId&count`,
-};
 
-export async function getAllMyBooks(userId) {
-    return await get(endpoints.MY_BOOKS(userId));
+const host = 'http://localhost:3030';
+api.settings.host = host;
+
+export const login = api.login;
+export const register = api.register;
+export const logout = api.logout;
+
+// Implement application-specific requests
+
+// Team Collection
+
+export async function getTeams() {
+    const teams = await api.get(host + '/data/teams');
+    const members = await getMembers(teams.map(t => t._id));
+    teams.forEach(t => t.memberCount = members.filter(m => m.teamId == t._id).length);
+    return teams;
 }
 
-export async function getAllBooks() {
-    return await get(endpoints.ALL_BOOKS);
+export async function getMyTeams() {
+    const userId = sessionStorage.getItem('userId');
+    const teamMembership = await api.get(host + `/data/members?where=_ownerId%3D%22${userId}%22%20AND%20status%3D%22member%22&load=team%3DteamId%3Ateams`)
+    const teams = teamMembership.map(r => r.team);
+    const members = await getMembers(teams.map(t => t._id));
+    teams.forEach(t => t.memberCount = members.filter(m => m.teamId == t._id).length);
+    return teams;
 }
 
-export async function createBook(data) {
-    return await post(endpoints.CREATE_BOOK, data);
+export async function getTeamById(id) {
+    return await api.get(host + '/data/teams/' + id);
 }
 
-export async function getBookById(id) {
-    return await get(endpoints.DETAILS_BOOK + id);
+export async function createTeam(team) {
+    const result = await api.post(host + '/data/teams', team);
+    const request = await requestToJoin(result._id);
+    await approveMembership(request);
+    
+    return result;
 }
 
-export async function updateBookById(id, data) {
-    return await put(endpoints.EDIT_BOOK + id, data);
+export async function editTeam(id, team) {
+    return await api.put(host + '/data/teams/' + id, team);
 }
 
-export async function deleteBookById(id) {
-    return await del(endpoints.DELETE_BOOK + id);
+export async function deleteTeam(id) {
+    return await api.del(host + '/data/teams/' + id);
 }
 
-export async function search(query) {
-    return await get(endpoints.SEARCH(query));
+export async function requestToJoin(teamId) {
+    const body = { teamId };
+    return await api.post(host + '/data/members', body);
 }
 
-export async function likeBook(bookId) {
-    return await post(endpoints.LIKE, { bookId });
+
+// Members Collection
+
+export async function getRequestsByTeamId(teamId) {
+    return await api.get(host + `/data/members?where=teamId%3D%22${teamId}%22&load=user%3D_ownerId%3Ausers`);
 }
 
-export async function getAllLikes(bookId) {
-    return await get(endpoints.ALL_LIKES(bookId));
+export async function getMembers(teamIds) {
+    const query = encodeURIComponent(`teamId IN ("${teamIds.join('", "')}") AND status="member"`);
+    return await api.get(host + `/data/members?where=${query}`);
+}
+
+export async function cancelMembership(requestId) {
+    return await api.del(host + '/data/members/' + requestId);
+}
+
+export async function approveMembership(request) {
+    const body = {
+        teamId: request.teamId,
+        status: 'member'
+    };
+    return await api.put(host + '/data/members/' + request._id, body);
 }

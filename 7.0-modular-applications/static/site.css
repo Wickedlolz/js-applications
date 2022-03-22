@@ -73,3 +73,11 @@ h2 {
     text-align: center;
     color: red
 }
+
+a.guest, a.user {
+    display: none;
+}
+
+#views {
+    display: none;
+}
