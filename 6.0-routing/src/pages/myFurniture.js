@@ -11,12 +11,14 @@ const furnitureCardTemplate = (furniture) => html`
                         ? `.${furniture.img}`
                         : `${furniture.img}`}
                 />
-                <p>Description here</p>
+                <p>${furniture.description}</p>
                 <footer>
                     <p>Price: <span>${furniture.price} $</span></p>
                 </footer>
                 <div>
-                    <a href="#" class="btn btn-info">Details</a>
+                    <a href="/details/${furniture._id}" class="btn btn-info"
+                        >Details</a
+                    >
                 </div>
             </div>
         </div>
