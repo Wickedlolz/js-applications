@@ -59,7 +59,7 @@ export function loginPage(ctx) {
             const user = await login(email, password);
             setUserData(user);
             event.target.reset();
-            ctx.page.redirect('/');
+            ctx.page.redirect('/catalog');
         } catch (error) {
             alert(error.message);
         }

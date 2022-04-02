@@ -71,7 +71,7 @@ export function registerPage(ctx) {
             const user = await register(email, password);
             setUserData(user);
             event.target.reset();
-            ctx.page.redirect('/');
+            ctx.page.redirect('/catalog');
         } catch (error) {
             alert(error.message);
         }

@@ -81,7 +81,7 @@ export function createPage(ctx) {
             });
 
             event.target.reset();
-            ctx.page.redirect('/');
+            ctx.page.redirect('/catalog');
         } catch (error) {
             alert(error.message);
         }
